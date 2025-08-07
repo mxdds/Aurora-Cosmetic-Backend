@@ -1,0 +1,33 @@
+import express from "express";
+import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+if(!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    throw new  Error("Missing required Cloudinary environment variables");
+
+}
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const router = express.Router();
+
+router.post("/signature", (req, res) => {
+    const {timestamp} = req.body;
+
+    const signature = cloudinary.utils.api_sign_request(
+        {
+            timestamp: timestamp,
+            folder: "ml_default",
+        },
+        process.env.CLOUDINARY_API_SECRET!
+    );
+
+    res.json({signature});
+});// Optional: specify a folder if needed
+
+export default router;

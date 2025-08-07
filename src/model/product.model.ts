@@ -1,15 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema }from 'mongoose';
 
 const ProductModel = new mongoose.Schema({
     "id":{
         required: true,
-        type:Number,
+        type:String,
         unique:true,
         index:true
     },
     "name":{
         required: true,
-        type:String
+        type:String,
     },
     "price":{
         required: true,
@@ -22,8 +22,17 @@ const ProductModel = new mongoose.Schema({
     "image": {
         required: true,
         type: String
+    },
+    "description": {
+        type: String
+    },
+    "category": {
+        type: Schema.Types.ObjectId,
+        ref: "Category", // Reference to the Category model
+        required: true // Ensure that a product must belong to a category
     }
 });
+
 
 const Product = mongoose.model("Product", ProductModel);
 export default Product;
